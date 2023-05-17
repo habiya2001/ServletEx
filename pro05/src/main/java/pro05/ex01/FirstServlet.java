@@ -8,6 +8,11 @@
 package pro05.ex01;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -23,7 +28,43 @@ public class FirstServlet extends HttpServlet{//상속
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		System.out.println("doget 메소드 호출");
+		
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null;
+		try {
+			DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+			conn = DriverManager.getConnection(
+					"jdbc:mysql://localhost/studydb", //JDBC URL
+					"study",	// DBMS 사용자 아이디
+					"study");	// DBMS 사용자 암호
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(
+					"SELECT MNO,MNAME,EMAIL,CRE_DATE" + 
+					" FROM MEMBERS" +
+					" ORDER BY MNO ASC");
+			
+			response.setContentType("text/html; charset=UTF-8");
+			PrintWriter out = response.getWriter();
+			out.println("<html><head><title>회원목록</title></head>");
+			out.println("<body><h1>회원목록</h1>");
+			while(rs.next()) {
+				out.println(
+					rs.getInt("MNO") + "," +
+					rs.getString("MNAME") + "," +
+					rs.getString("EMAIL") + "," + 
+					rs.getDate("CRE_DATE") + "<br>"
+				);
+			}
+			out.println("</body></html>");
+		} catch (Exception e) {
+			throw new ServletException(e);
+			
+		} finally {
+			try {if (rs != null) rs.close();} catch(Exception e) {}
+			try {if (stmt != null) stmt.close();} catch(Exception e) {}
+			try {if (conn != null) conn.close();} catch(Exception e) {}
+		}
 	}
 	//외부 요청이 있을 때 처리
 	@Override

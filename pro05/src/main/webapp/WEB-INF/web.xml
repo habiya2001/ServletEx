@@ -10,6 +10,7 @@
 		<servlet-name>FirstServlet</servlet-name><!-- 연동할 클래스 지정 -->
 		<url-pattern>/First</url-pattern><!-- 외부접속방식 -->
 	</servlet-mapping>
+	
   <!-- <display-name>pro05</display-name>
   	 webapp로 접속할 때 필요한 파일 
   	 webapp에 아래파일이 존재하면 그파일을 시작파일로 사용 
